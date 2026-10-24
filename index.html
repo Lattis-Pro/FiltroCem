@@ -58,6 +58,13 @@
     .animate-arrow-left {
       animation: pulseArrow 1.2s infinite ease-in-out;
     }
+    
+    /* Regla adicional para evitar la selección de texto */
+    body {
+      -webkit-user-select: none; /* Safari */
+      -ms-user-select: none; /* IE 10 and IE 11 */
+      user-select: none; /* Standard syntax */
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-orange-200">
@@ -857,7 +864,7 @@
 A ver, miren esta fila de "Crédito Efectivo" que les estoy mostrando en pantalla. Tiene dos datos antiguos que debemos actualizar por completo:
 
 1. El Saldo anterior: ¿Ven esos S/ 45,972.00? ¡Ese monto ya no va! En su lugar colocamos el nuevo Saldo Actualizado de S/ 4,000.00.
-2. La Deuda cuota no BCP: ¿Ven los S/ 893.00? ¡También desaparecen de nuestro mapa! En su lugar colocamos exactamente la cuota que calculó el sistema: S/ 77.70.
+​2. La Deuda cuota no BCP: ¿Ven los S/ 893.00? ¡También desaparecen de nuestro mapa! En su lugar colocamos exactamente la cuota que calculó el sistema: S/ 77.70.
 
 Resumiendo la jugada:
 - El saldo viejo de S/ 45,972.00 se borra y entra S/ 4,000.00.
@@ -915,6 +922,38 @@ Resumiendo la jugada:
 
     // Initialize display
     updateStepView();
+
+    // =========================================================
+    // PROTECCIÓN CONTRA CLIC DERECHO, F12 Y ATAJOS DE DEVTOOLS
+    // =========================================================
+    
+    // 1. Bloquear el clic derecho del mouse
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      showToast("Acción no permitida.");
+    });
+
+    // 2. Bloquear combinaciones de teclado específicas
+    document.addEventListener('keydown', function(e) {
+      // Bloquear la tecla F12
+      if (e.key === 'F12' || e.keyCode === 123) {
+        e.preventDefault();
+        showToast("Herramientas de desarrollo desactivadas.");
+      }
+      
+      // Bloquear Ctrl + Shift + I (Inspector), Ctrl + Shift + J (Consola), Ctrl + Shift + C
+      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c' || e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+        e.preventDefault();
+        showToast("Acción no permitida.");
+      }
+      
+      // Bloquear Ctrl + U (Ver código fuente)
+      if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
+        e.preventDefault();
+        showToast("Visualización de código fuente bloqueada.");
+      }
+    });
+
   </script>
 </body>
 </html>
